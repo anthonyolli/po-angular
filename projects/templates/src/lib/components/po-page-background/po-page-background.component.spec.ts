@@ -83,29 +83,40 @@ describe('PoPageBackgroundComponent:', () => {
     });
 
     it('p-languages: should set property with default languages if invalid.', () => {
+      spyOn(component, 'setLanguageOptions');
       const invalidValues = [[], null, undefined];
       const expectedValue = [poLanguageDefault];
       expectPropertiesValues(component, 'languagesList', invalidValues, expectedValue);
+      expect(component.setLanguageOptions).toHaveBeenCalled();
     });
 
     it('p-languages: should set property with languages.', () => {
+      spyOn(component, 'setLanguageOptions');
       const languages: Array<PoLanguage> = [{ description: 'portugues', language: 'pt' }];
       const validValues = [languages];
       expectPropertiesValues(component, 'languagesList', validValues, validValues);
+      expect(component.setLanguageOptions).toHaveBeenCalled();
     });
   });
 
   describe('Methods:', () => {
     it('ngOnInit: should get the stored language on localstorage (or browserLanguage by default if en, pt, es or ru) and apply it to `selectedLanguageOption`', () => {
+      spyOn(component, 'setLanguageOptions');
       component.ngOnInit();
       expect(component.selectedLanguageOption).toBe(languageService.getShortLanguage());
+      expect(component.setLanguageOptions).toHaveBeenCalled();
     });
 
     it('onChangeLanguage: should emit `selectedLanguage`', () => {
       spyOn(component.selectedLanguage, 'emit');
       component.onChangeLanguage();
-
       expect(component.selectedLanguage.emit).toHaveBeenCalled();
+    });
+
+    it('setLanguageOptions: should emit `languageList`', () => {
+      const languages: Array<PoLanguage> = [{ description: 'portugues', language: 'pt' }];
+      component.languagesList = languages;
+      expect(component['_selectLanguageOptions']).toEqual([{ label: 'portugues', value: 'pt' }]);
     });
   });
 
